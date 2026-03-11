@@ -21,6 +21,13 @@ read_region_counts <- function(path) {
   out
 }
 
+read_gene_counts <- function(path) {
+  dat <- read.delim(path, stringsAsFactors = FALSE, check.names = FALSE)
+  genes <- trimws(dat$`Gene Name`)
+  genes <- genes[genes != "" & genes != "NA"]
+  sort(table(genes), decreasing = TRUE)
+}
+
 make_venn <- function() {
   counts <- read.csv("results/tables/thesis_count_comparison.csv", stringsAsFactors = FALSE)
   bcor_unique <- counts$rerun_observed[counts$metric == "BCOR unique"]
@@ -93,6 +100,78 @@ make_threshold_plot <- function() {
   dev.off()
 }
 
+make_top_target_barplot <- function() {
+  counts <- read_gene_counts("results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv")
+  top_counts <- head(counts, 20)
+  top_df <- data.frame(
+    gene = names(top_counts),
+    peak_count = as.integer(top_counts),
+    stringsAsFactors = FALSE
+  )
+  write.csv(top_df, "results/tables/top_candidate_gene_peak_counts.csv", row.names = FALSE)
+
+  png("results/figures/top_candidate_genes_barplot.png", width = 1800, height = 1400, res = 180)
+  par(mar = c(6, 10, 4, 2))
+  barplot(
+    rev(top_df$peak_count),
+    horiz = TRUE,
+    names.arg = rev(top_df$gene),
+    las = 1,
+    col = "#C8523B",
+    border = NA,
+    xlab = "Number of assigned shared non-H3K27me3 peaks",
+    main = "Top candidate target genes by retained shared peak count"
+  )
+  dev.off()
+}
+
+make_gene_set_heatmap <- function() {
+  set_paths <- c(
+    BCOR = "results/annotations/BCOR.annotated.tsv",
+    KDM2B = "results/annotations/KDM2B.annotated.tsv",
+    Overlap = "results/annotations/BCOR_KDM2B_overlap.annotated.tsv",
+    Overlap_no_H3K27me3 = "results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv"
+  )
+
+  top_counts <- read_gene_counts("results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv")
+  top_genes <- names(head(top_counts, 20))
+
+  mat <- matrix(0, nrow = length(top_genes), ncol = length(set_paths), dimnames = list(top_genes, names(set_paths)))
+  for (set_name in names(set_paths)) {
+    counts <- read_gene_counts(set_paths[[set_name]])
+    mat[, set_name] <- as.integer(counts[top_genes])
+    mat[is.na(mat[, set_name]), set_name] <- 0L
+  }
+
+  write.csv(
+    data.frame(gene = rownames(mat), mat, row.names = NULL, check.names = FALSE),
+    "results/tables/candidate_gene_set_matrix.csv",
+    row.names = FALSE
+  )
+
+  z <- log1p(mat)
+  cols <- colorRampPalette(c("#FFF6E8", "#E8C547", "#C8523B", "#7C2118"))(100)
+
+  png("results/figures/top_candidate_genes_heatmap.png", width = 1600, height = 1800, res = 180)
+  par(mar = c(10, 12, 4, 2))
+  image(
+    x = seq_len(ncol(z)),
+    y = seq_len(nrow(z)),
+    z = t(z[nrow(z):1, , drop = FALSE]),
+    col = cols,
+    axes = FALSE,
+    xlab = "",
+    ylab = "",
+    main = "Top candidate genes across peak sets (log1p peak count)"
+  )
+  axis(1, at = seq_len(ncol(z)), labels = colnames(z), las = 2, cex.axis = 0.9)
+  axis(2, at = seq_len(nrow(z)), labels = rev(rownames(z)), las = 2, cex.axis = 0.75)
+  box()
+  dev.off()
+}
+
 make_venn()
 make_region_plot()
 make_threshold_plot()
+make_top_target_barplot()
+make_gene_set_heatmap()

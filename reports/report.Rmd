@@ -112,7 +112,21 @@ These terms suggest PRC1.1-associated chromatin binding in LY1 cells may regulat
 knitr::kable(head(candidate_genes, 20), align = c("l", "l"))
 ```
 
-The current committed candidate gene table is a placeholder seeded with thesis-reported examples. Running the overlap and annotation workflow with the public peak BED files will replace it with a directly generated gene list.
+The current committed candidate gene table is generated from the public rerun workflow.
+
+```{r top-target-barplot, echo=FALSE, out.width='90%', fig.align='center'}
+top_barplot_path <- file.path(figure_root, "top_candidate_genes_barplot.png")
+if (file.exists(top_barplot_path)) {
+  knitr::include_graphics(top_barplot_path)
+}
+```
+
+```{r top-target-heatmap, echo=FALSE, out.width='85%', fig.align='center'}
+top_heatmap_path <- file.path(figure_root, "top_candidate_genes_heatmap.png")
+if (file.exists(top_heatmap_path)) {
+  knitr::include_graphics(top_heatmap_path)
+}
+```
 
 ## Reproducibility Notes
 
