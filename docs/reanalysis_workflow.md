@@ -142,7 +142,22 @@ make go
 
 If the required R packages are installed, this reads `results/tables/candidate_target_genes.csv` and writes GO enrichment results to `results/tables/go_enrichment.csv`.
 
-### 7. Render the report
+### 7. Sweep H3K27me3 thresholds
+
+```bash
+make sweep
+```
+
+This writes `results/tables/h3k27me3_threshold_sweep.csv` and helps quantify how sensitive the PRC2-exclusion step is to the WIG-to-BED threshold.
+
+Current interpretation from the public rerun:
+
+- the shared BCOR-KDM2B overlap count is reproduced exactly at `14,546`
+- the Venn-style unique counts are also reproduced (`3,002` BCOR-unique and `11,925` KDM2B-unique)
+- the promoter-plus-intron figure from the thesis text is **not** currently reproduced by the public rerun annotation workflow
+- threshold sweeps from `0.1` to `0.5` change the retained overlap-without-H3K27me3 count only modestly, so the `6,943` thesis value likely reflects a different filtering or reporting step
+
+### 8. Render the report
 
 ```bash
 make report

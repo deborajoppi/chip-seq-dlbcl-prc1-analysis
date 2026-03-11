@@ -1,0 +1,4 @@
+min_signal,mask_intervals,overlap_with_h3k27me3,overlap_without_h3k27me3
+0.1,9402665,7832,6714
+0.5,10532723,7715,6831
+1.0,3176712,3071,11475

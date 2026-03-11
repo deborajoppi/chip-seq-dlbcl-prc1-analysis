@@ -12,6 +12,10 @@ peak_totals <- read.csv("results/tables/peak_totals.csv", stringsAsFactors = FAL
 region_summary <- read.csv("results/tables/genomic_region_summary.csv", stringsAsFactors = FALSE)
 candidate_genes <- read.csv("results/tables/candidate_target_genes.csv", stringsAsFactors = FALSE)
 thesis_counts <- read.csv("results/tables/thesis_count_comparison.csv", stringsAsFactors = FALSE)
+h3k27me3_sweep <- NULL
+if (file.exists("results/tables/h3k27me3_threshold_sweep.csv")) {
+  h3k27me3_sweep <- read.csv("results/tables/h3k27me3_threshold_sweep.csv", stringsAsFactors = FALSE)
+}
 if (file.exists("results/tables/go_enrichment.csv")) {
   go_terms <- read.csv("results/tables/go_enrichment.csv", stringsAsFactors = FALSE)
   go_source_label <- "Current rerun GO enrichment output"
@@ -55,6 +59,18 @@ knitr::kable(region_summary, align = c("l", "l", "r"))
 ```
 
 The thesis text reports that `6,943` shared peaks were located in promoter-TSS and intronic regions, consistent with promoter-proximal and intragenic binding by PRC1.1-associated factors.
+
+The current public rerun does **not** reproduce that specific promoter-plus-intron total. With the public overlap regions and current HOMER annotation workflow, promoter-TSS plus intron counts sum to `10,322` for the shared set.
+
+## H3K27me3 Threshold Check
+
+```{r h3k27me3-thresholds}
+if (!is.null(h3k27me3_sweep)) {
+  knitr::kable(h3k27me3_sweep)
+}
+```
+
+Across thresholds from `0.1` to `0.5`, the number of overlap regions retained after `H3K27me3` exclusion changes only modestly (`6,714` to `6,831`). This suggests the unresolved `6,943` thesis number is unlikely to be explained by small threshold changes alone and more likely reflects a different filtering or reporting choice.
 
 ## Biological Process Enrichment
 

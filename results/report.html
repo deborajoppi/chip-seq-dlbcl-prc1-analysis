@@ -351,6 +351,7 @@ pre code {
 <li><a href="#peak-summary">Peak Summary</a></li>
 <li><a href="#thesis-count-comparison">Thesis Count Comparison</a></li>
 <li><a href="#genomic-distribution">Genomic Distribution</a></li>
+<li><a href="#h3k27me3-threshold-check">H3K27me3 Threshold Check</a></li>
 <li><a href="#biological-process-enrichment">Biological Process Enrichment</a></li>
 <li><a href="#candidate-genes">Candidate Genes</a></li>
 <li><a href="#figures">Figures</a></li>
@@ -503,6 +504,41 @@ pre code {
 </tbody>
 </table>
 <p>The thesis text reports that <code>6,943</code> shared peaks were located in promoter-TSS and intronic regions, consistent with promoter-proximal and intragenic binding by PRC1.1-associated factors.</p>
+<p>The current public rerun does <strong>not</strong> reproduce that specific promoter-plus-intron total. With the public overlap regions and current HOMER annotation workflow, promoter-TSS plus intron counts sum to <code>10,322</code> for the shared set.</p>
+</div>
+<div id="h3k27me3-threshold-check" class="section level2">
+<h2>H3K27me3 Threshold Check</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="right">min_signal</th>
+<th align="right">mask_intervals</th>
+<th align="right">overlap_with_h3k27me3</th>
+<th align="right">overlap_without_h3k27me3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.1</td>
+<td align="right">9402665</td>
+<td align="right">7832</td>
+<td align="right">6714</td>
+</tr>
+<tr class="even">
+<td align="right">0.5</td>
+<td align="right">10532723</td>
+<td align="right">7715</td>
+<td align="right">6831</td>
+</tr>
+<tr class="odd">
+<td align="right">1.0</td>
+<td align="right">3176712</td>
+<td align="right">3071</td>
+<td align="right">11475</td>
+</tr>
+</tbody>
+</table>
+<p>Across thresholds from <code>0.1</code> to <code>0.5</code>, the number of overlap regions retained after <code>H3K27me3</code> exclusion changes only modestly (<code>6,714</code> to <code>6,831</code>). This suggests the unresolved <code>6,943</code> thesis number is unlikely to be explained by small threshold changes alone and more likely reflects a different filtering or reporting choice.</p>
 </div>
 <div id="biological-process-enrichment" class="section level2">
 <h2>Biological Process Enrichment</h2>

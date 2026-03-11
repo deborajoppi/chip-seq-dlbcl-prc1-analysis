@@ -53,6 +53,13 @@ Additional reported findings:
 
 Representative genes highlighted in the thesis text include `PRICKLE1`, `CUL1`, `MARCHF6`, `FBXL3`, `SMAD7`, `CLOCK`, `POU4F1`, `STK24`, `MYC`, and `JAK2`.
 
+Current public rerun status:
+
+- the overlap count `14,546` is reproduced exactly from the public files
+- the Venn-style unique counts are also reproduced (`3,002` BCOR-unique and `11,925` KDM2B-unique)
+- the promoter-plus-intron figure from the thesis text is not yet reproduced by the current public rerun annotation workflow
+- `H3K27me3` threshold checks from `0.1` to `0.5` only modestly change the retained overlap-without-H3K27me3 count, so the unresolved `6,943` value likely reflects a different filtering or reporting choice
+
 ## Repository Layout
 
 ```text
@@ -115,6 +122,7 @@ make prepare
 make overlap
 make annotate
 make summarize
+make sweep
 make report
 ```
 
@@ -135,6 +143,7 @@ The rendered output is written to `results/report.html`. Detailed rerun notes ar
 - The workflow assumes that the public peak files used for rerun are aligned to `hg18`, matching the thesis analysis.
 - `H3K27me3` is distributed publicly as a WIG signal track, so the exclusion BED used in the rerun is derived from signal intervals rather than a deposited peak BED.
 - The overlap count is computed from distinct BCOR-KDM2B intersection regions. Strict non-overlap peak counts are tracked separately because they are not identical to the Venn-style counts reported in the thesis.
+- `make sweep` runs a small sensitivity analysis over multiple `H3K27me3` signal thresholds and writes `results/tables/h3k27me3_threshold_sweep.csv`.
 
 ## Next Additions
 
