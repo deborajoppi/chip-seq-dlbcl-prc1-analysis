@@ -1,0 +1,21 @@
+.DS_Store
+.Rhistory
+.RData
+.Rproj.user/
+.renv/
+renv/library/
+renv/staging/
+__pycache__/
+*.pyc
+*.pyo
+*.swp
+*.tmp
+*.log
+
+# Keep the repository lightweight; public raw files can be re-downloaded.
+data/raw/*
+!data/raw/.gitkeep
+
+# Local working outputs that should not be versioned by default.
+results/tmp/*
+!results/tmp/.gitkeep

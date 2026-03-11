@@ -1,0 +1,6 @@
+term,category,representative_genes
+proteasome-mediated ubiquitin-dependent protein catabolic process,protein degradation,"PRICKLE1; CUL1; MARCHF6; FBXL3; SMAD7; CLOCK"
+mitotic cell cycle phase transition,cell cycle,"CUL1; MYC"
+Wnt signaling pathway,signaling,"PRICKLE1; SMAD7"
+nucleocytoplasmic transport,transport,"CLOCK"
+intrinsic apoptotic signaling pathway,apoptosis,"POU4F1; CUL1; STK24; MYC; JAK2"

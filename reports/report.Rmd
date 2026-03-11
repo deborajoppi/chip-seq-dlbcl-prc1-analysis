@@ -1,0 +1,54 @@
+---
+title: "BCOR and KDM2B Target Gene Analysis in GCB-DLBCL"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+peak_totals <- read.csv("results/tables/peak_totals.csv", stringsAsFactors = FALSE)
+go_terms <- read.csv("results/tables/go_terms_summary.csv", stringsAsFactors = FALSE)
+```
+
+## Overview
+
+This report summarizes the thesis subsection on identification of putative PRC1.1 target genes in GCB-type DLBCL using public ChIP-seq data from the `LY1` cell line.
+
+Peak annotations were generated with `HOMER`, overlap between `BCOR` and `KDM2B` was used to define a shared PRC1.1-associated set, and `H3K27me3` was used to exclude candidate regions likely shared with `PRC2`.
+
+## Peak Summary
+
+```{r peak-table}
+knitr::kable(peak_totals, align = c("l", "r"))
+```
+
+Key observations from the thesis text:
+
+- `14,546` peaks overlapped between `BCOR` and `KDM2B`.
+- `6,943` overlapping peaks were assigned to promoter-TSS or intronic regions.
+- `11,925` peaks were unique to `KDM2B`.
+- `3,002` peaks were unique to `BCOR`.
+
+## Biological Process Enrichment
+
+```{r go-table}
+knitr::kable(go_terms, align = c("l", "l", "l"))
+```
+
+These terms suggest PRC1.1-associated chromatin binding in LY1 cells may regulate protein turnover, cell-cycle control, nucleocytoplasmic trafficking, developmental signaling, and apoptosis-related pathways.
+
+## Figures
+
+Add thesis Figure 31 panels to `results/figures/` and extend this report to embed them:
+
+- `results/figures/figure31a_venn.*`
+- `results/figures/figure31b_genomic_regions.*`
+- `results/figures/figure31c_go_dotplot.*`
+
+## Reproducibility Notes
+
+- Raw public files are intentionally not committed under `data/raw/`.
+- `data/metadata/public_sources_template.csv` is included as a fill-in template for accession and source tracking.
+- The committed summary tables currently reflect the reported thesis values and pathway labels.
