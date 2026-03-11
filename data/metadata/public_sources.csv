@@ -1,0 +1,4 @@
+assay,target,cell_line,genome_build,geo_accession,source_url,local_expected_bed,notes
+ChIP-seq,BCOR,LY1,hg18,GSE29282,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE29282,data/raw/peaks/BCOR_LY1_hg18.bed,BCOR source used in thesis analysis
+ChIP-seq,KDM2B,LY1,hg18,GSE81623,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81623,data/raw/peaks/KDM2B_LY1_hg18.bed,KDM2B source used in thesis analysis
+ChIP-seq,H3K27me3,LY1,hg18,GSM763414,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM763414,data/raw/peaks/H3K27me3_LY1_hg18.bed,H3K27me3 source used to exclude PRC2-associated regions

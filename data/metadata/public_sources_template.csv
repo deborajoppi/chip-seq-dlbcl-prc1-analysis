@@ -1,4 +1,0 @@
-assay,target,cell_line,genome_build,source_url,accession_or_identifier,notes
-ChIP-seq,KDM2B,LY1,hg18,,,Add the original public source used in the thesis analysis
-ChIP-seq,BCOR,LY1,hg18,,,Add the original public source used in the thesis analysis
-ChIP-seq,H3K27me3,LY1,hg18,,,Add the original public source used in the thesis analysis

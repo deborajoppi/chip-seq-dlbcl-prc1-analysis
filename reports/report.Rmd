@@ -10,6 +10,8 @@ output:
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 peak_totals <- read.csv("results/tables/peak_totals.csv", stringsAsFactors = FALSE)
 go_terms <- read.csv("results/tables/go_terms_summary.csv", stringsAsFactors = FALSE)
+region_summary <- read.csv("results/tables/genomic_region_summary.csv", stringsAsFactors = FALSE)
+candidate_genes <- read.csv("results/tables/candidate_target_genes.csv", stringsAsFactors = FALSE)
 ```
 
 ## Overview
@@ -31,6 +33,14 @@ Key observations from the thesis text:
 - `11,925` peaks were unique to `KDM2B`.
 - `3,002` peaks were unique to `BCOR`.
 
+## Genomic Distribution
+
+```{r region-table}
+knitr::kable(region_summary, align = c("l", "l", "r"))
+```
+
+The thesis text reports that `6,943` shared peaks were located in promoter-TSS and intronic regions, consistent with promoter-proximal and intragenic binding by PRC1.1-associated factors.
+
 ## Biological Process Enrichment
 
 ```{r go-table}
@@ -38,6 +48,14 @@ knitr::kable(go_terms, align = c("l", "l", "l"))
 ```
 
 These terms suggest PRC1.1-associated chromatin binding in LY1 cells may regulate protein turnover, cell-cycle control, nucleocytoplasmic trafficking, developmental signaling, and apoptosis-related pathways.
+
+## Candidate Genes
+
+```{r candidate-genes}
+knitr::kable(head(candidate_genes, 20), align = c("l", "l"))
+```
+
+The current committed candidate gene table is a placeholder seeded with thesis-reported examples. Running the overlap and annotation workflow with the public peak BED files will replace it with a directly generated gene list.
 
 ## Figures
 
@@ -50,5 +68,6 @@ Add thesis Figure 31 panels to `results/figures/` and extend this report to embe
 ## Reproducibility Notes
 
 - Raw public files are intentionally not committed under `data/raw/`.
-- `data/metadata/public_sources_template.csv` is included as a fill-in template for accession and source tracking.
-- The committed summary tables currently reflect the reported thesis values and pathway labels.
+- `data/metadata/public_sources.csv` records the GEO accessions used in the thesis.
+- `docs/reanalysis_workflow.md` provides the rerun steps for GitHub documentation.
+- The committed summary tables currently combine thesis-reported values with rerunnable workflow outputs where raw peak files are available.

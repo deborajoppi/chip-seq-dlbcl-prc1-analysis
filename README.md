@@ -1,5 +1,9 @@
 # BCOR and KDM2B Target Gene Analysis in GCB-DLBCL
 
+Reproducible reanalysis repository for the thesis analysis section:
+
+`1.19 Identification of BCOR and KDM2B target genes in GCB-type DLBCL`
+
 This project documents a secondary analysis of public ChIP-seq data from the LY1 cell line to identify putative PRC1.1 target genes in germinal center B-cell-like diffuse large B-cell lymphoma (GCB-DLBCL).
 
 ## Overview
@@ -13,6 +17,24 @@ The analysis logic is:
 3. identify overlapping `KDM2B` and `BCOR` peaks
 4. use `H3K27me3` to flag PRC2-associated regions for exclusion
 5. summarize genomic annotations and enriched biological processes for the retained gene set
+
+## Public Data Used
+
+The public datasets used in the thesis analysis are:
+
+| Assay | Target | GEO accession | URL | Notes |
+|---|---|---|---|---|
+| ChIP-seq | BCOR | `GSE29282` | https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE29282 | Source used for BCOR LY1 peaks |
+| ChIP-seq | KDM2B | `GSE81623` | https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81623 | Source used for KDM2B LY1 peaks |
+| ChIP-seq | H3K27me3 | `GSM763414` | https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM763414 | Source used to exclude PRC2-associated regions |
+
+Because GEO releases can package peak files differently across accessions, this repo standardizes the rerun workflow around three local BED inputs:
+
+- `data/raw/peaks/BCOR_LY1_hg18.bed`
+- `data/raw/peaks/KDM2B_LY1_hg18.bed`
+- `data/raw/peaks/H3K27me3_LY1_hg18.bed`
+
+The step-by-step workflow for preparing those files and rerunning the analysis is documented in `docs/reanalysis_workflow.md`.
 
 ## Key Results
 
@@ -37,24 +59,39 @@ Representative genes highlighted in the thesis text include `PRICKLE1`, `CUL1`, 
 
 ```text
 chip-seq-dlbcl-prc1-analysis/
+├── docs/
+│   └── reanalysis_workflow.md
 ├── data/
 │   ├── metadata/
-│   │   └── public_sources_template.csv
+│   │   └── public_sources.csv
 │   └── raw/
-│       └── .gitkeep
+│       ├── .gitkeep
+│       └── peaks/
+│           └── .gitkeep
 ├── reports/
 │   └── report.Rmd
 ├── results/
+│   ├── annotations/
+│   │   └── .gitkeep
 │   ├── figures/
 │   │   └── .gitkeep
+│   ├── overlaps/
+│   │   └── .gitkeep
 │   ├── tables/
+│   │   ├── candidate_target_genes.csv
+│   │   ├── genomic_region_summary.csv
 │   │   ├── go_terms_summary.csv
 │   │   └── peak_totals.csv
 │   └── tmp/
 │       └── .gitkeep
 ├── scripts/
 │   ├── 00_prepare_dirs.sh
-│   └── 01_render_report.R
+│   ├── 01_prepare_peak_inputs.sh
+│   ├── 02_intersect_peaks.sh
+│   ├── 03_annotate_peaks.sh
+│   ├── 04_summarize_annotations.py
+│   ├── 05_run_go_enrichment.R
+│   └── 06_render_report.R
 ├── .gitignore
 ├── LICENSE
 ├── Makefile
@@ -69,23 +106,34 @@ Prepare directories:
 make init
 ```
 
-Render the summary report:
+Run the BED-based reanalysis after placing the three peak files in `data/raw/peaks/`:
 
 ```bash
+make prepare
+make overlap
+make annotate
+make summarize
 make report
 ```
 
-The rendered output is written to `results/report.html`.
+Optional GO enrichment:
+
+```bash
+make go
+```
+
+The rendered output is written to `results/report.html`. Detailed rerun notes are in `docs/reanalysis_workflow.md`.
 
 ## Data Notes
 
 - This repository is intended for `public` data and derived summaries only.
 - Raw downloaded files are excluded from git by default under `data/raw/`.
-- The current committed tables capture the summary values reported in the thesis text. You can replace or extend them once the original analysis inputs and figure panels are added.
+- GEO accessions and source links are tracked in `data/metadata/public_sources.csv`.
+- The current committed summary tables capture the thesis-reported values and provide expected targets for rerunning the pipeline.
+- The workflow assumes that the public peak files used for rerun are aligned to `hg18`, matching the thesis analysis.
 
 ## Next Additions
 
-- add the original public ChIP-seq source accessions and download links to `data/metadata/public_sources_template.csv`
 - add the figure panel files corresponding to thesis Figure 31 into `results/figures/`
 - add the original overlap tables, genomic annotation tables, and GO output tables if available
-- expand the report to include the exact filtering rules used to exclude `H3K27me3`-associated peaks
+- replace the current summary placeholders with outputs generated directly from the rerun workflow

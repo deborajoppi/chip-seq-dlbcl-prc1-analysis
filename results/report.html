@@ -349,7 +349,9 @@ pre code {
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#peak-summary">Peak Summary</a></li>
+<li><a href="#genomic-distribution">Genomic Distribution</a></li>
 <li><a href="#biological-process-enrichment">Biological Process Enrichment</a></li>
+<li><a href="#candidate-genes">Candidate Genes</a></li>
 <li><a href="#figures">Figures</a></li>
 <li><a href="#reproducibility-notes">Reproducibility Notes</a></li>
 </ul>
@@ -396,6 +398,26 @@ pre code {
 <li><code>3,002</code> peaks were unique to <code>BCOR</code>.</li>
 </ul>
 </div>
+<div id="genomic-distribution" class="section level2">
+<h2>Genomic Distribution</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">peak_set</th>
+<th align="left">region_class</th>
+<th align="right">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="left">promoter-TSS and intronic</td>
+<td align="right">6943</td>
+</tr>
+</tbody>
+</table>
+<p>The thesis text reports that <code>6,943</code> shared peaks were located in promoter-TSS and intronic regions, consistent with promoter-proximal and intragenic binding by PRC1.1-associated factors.</p>
+</div>
 <div id="biological-process-enrichment" class="section level2">
 <h2>Biological Process Enrichment</h2>
 <table>
@@ -441,6 +463,60 @@ pre code {
 </table>
 <p>These terms suggest PRC1.1-associated chromatin binding in LY1 cells may regulate protein turnover, cell-cycle control, nucleocytoplasmic trafficking, developmental signaling, and apoptosis-related pathways.</p>
 </div>
+<div id="candidate-genes" class="section level2">
+<h2>Candidate Genes</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">gene</th>
+<th align="left">source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PRICKLE1</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="even">
+<td align="left">CUL1</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="odd">
+<td align="left">MARCHF6</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="even">
+<td align="left">FBXL3</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="odd">
+<td align="left">SMAD7</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="even">
+<td align="left">CLOCK</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="odd">
+<td align="left">POU4F1</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="even">
+<td align="left">STK24</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="odd">
+<td align="left">MYC</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+<tr class="even">
+<td align="left">JAK2</td>
+<td align="left">thesis_reported_example</td>
+</tr>
+</tbody>
+</table>
+<p>The current committed candidate gene table is a placeholder seeded with thesis-reported examples. Running the overlap and annotation workflow with the public peak BED files will replace it with a directly generated gene list.</p>
+</div>
 <div id="figures" class="section level2">
 <h2>Figures</h2>
 <p>Add thesis Figure 31 panels to <code>results/figures/</code> and extend this report to embed them:</p>
@@ -454,8 +530,9 @@ pre code {
 <h2>Reproducibility Notes</h2>
 <ul>
 <li>Raw public files are intentionally not committed under <code>data/raw/</code>.</li>
-<li><code>data/metadata/public_sources_template.csv</code> is included as a fill-in template for accession and source tracking.</li>
-<li>The committed summary tables currently reflect the reported thesis values and pathway labels.</li>
+<li><code>data/metadata/public_sources.csv</code> records the GEO accessions used in the thesis.</li>
+<li><code>docs/reanalysis_workflow.md</code> provides the rerun steps for GitHub documentation.</li>
+<li>The committed summary tables currently combine thesis-reported values with rerunnable workflow outputs where raw peak files are available.</li>
 </ul>
 </div>
 
