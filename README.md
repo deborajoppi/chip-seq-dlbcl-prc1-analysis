@@ -1,9 +1,5 @@
 # BCOR and KDM2B Target Gene Analysis in GCB-DLBCL
 
-Reproducible repository scaffold for the thesis analysis section:
-
-`1.19 Identification of BCOR and KDM2B target genes in GCB-type DLBCL`
-
 This project documents a secondary analysis of public ChIP-seq data from the LY1 cell line to identify putative PRC1.1 target genes in germinal center B-cell-like diffuse large B-cell lymphoma (GCB-DLBCL).
 
 ## Overview
