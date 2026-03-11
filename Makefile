@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: init fetch prepare overlap annotate summarize figures sweep go report all
+.PHONY: init fetch prepare overlap annotate summarize figures sweep go gsea report all
 
 init:
 	bash scripts/00_prepare_dirs.sh
@@ -28,6 +28,9 @@ sweep:
 
 go:
 	Rscript scripts/05_run_go_enrichment.R
+
+gsea:
+	Rscript scripts/09_run_gsea.R
 
 report:
 	Rscript scripts/06_render_report.R

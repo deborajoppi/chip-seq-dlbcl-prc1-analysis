@@ -354,6 +354,7 @@ pre code {
 <li><a href="#h3k27me3-threshold-check">H3K27me3 Threshold Check</a></li>
 <li><a href="#biological-process-enrichment">Biological Process Enrichment</a></li>
 <li><a href="#candidate-genes">Candidate Genes</a></li>
+<li><a href="#hallmark-gsea">Hallmark GSEA</a></li>
 <li><a href="#reproducibility-notes">Reproducibility Notes</a></li>
 </ul>
 </div>
@@ -680,6 +681,112 @@ pre code {
 </table>
 <p>The current committed candidate gene table is generated from the public rerun workflow.</p>
 <p>This promoter-restricted view excludes the self-genes <code>BCOR</code> and <code>KDM2B</code>, so it is easier to read as a candidate-target ranking rather than local occupancy around the bait loci.</p>
+</div>
+<div id="hallmark-gsea" class="section level2">
+<h2>Hallmark GSEA</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">pathway</th>
+<th align="right">NES</th>
+<th align="right">padj</th>
+<th align="right">size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">HALLMARK_HYPOXIA</td>
+<td align="right">1.243284</td>
+<td align="right">0.0895549</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_ESTROGEN_RESPONSE_EARLY</td>
+<td align="right">1.250863</td>
+<td align="right">0.0926176</td>
+<td align="right">51</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_TNFA_SIGNALING_VIA_NFKB</td>
+<td align="right">1.188545</td>
+<td align="right">0.0926176</td>
+<td align="right">74</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_MYC_TARGETS_V2</td>
+<td align="right">1.279829</td>
+<td align="right">0.2947220</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_NOTCH_SIGNALING</td>
+<td align="right">1.284744</td>
+<td align="right">0.3214478</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_INTERFERON_ALPHA_RESPONSE</td>
+<td align="right">1.237580</td>
+<td align="right">0.3214478</td>
+<td align="right">23</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_IL6_JAK_STAT3_SIGNALING</td>
+<td align="right">1.199563</td>
+<td align="right">0.3214478</td>
+<td align="right">22</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_TGF_BETA_SIGNALING</td>
+<td align="right">1.170391</td>
+<td align="right">0.3214478</td>
+<td align="right">26</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_INFLAMMATORY_RESPONSE</td>
+<td align="right">1.135601</td>
+<td align="right">0.3214478</td>
+<td align="right">35</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_INTERFERON_GAMMA_RESPONSE</td>
+<td align="right">1.123984</td>
+<td align="right">0.3214478</td>
+<td align="right">51</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_UV_RESPONSE_DN</td>
+<td align="right">1.109339</td>
+<td align="right">0.3214478</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_E2F_TARGETS</td>
+<td align="right">1.082710</td>
+<td align="right">0.3214478</td>
+<td align="right">80</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_MYC_TARGETS_V1</td>
+<td align="right">1.070980</td>
+<td align="right">0.3214478</td>
+<td align="right">92</td>
+</tr>
+<tr class="even">
+<td align="left">HALLMARK_KRAS_SIGNALING_DN</td>
+<td align="right">1.112815</td>
+<td align="right">0.4079046</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">HALLMARK_GLYCOLYSIS</td>
+<td align="right">1.062009</td>
+<td align="right">0.4079046</td>
+<td align="right">58</td>
+</tr>
+</tbody>
+</table>
+<p>This GSEA is preranked on promoter-assigned shared non-H3K27me3 peak counts, with <code>BCOR</code> and <code>KDM2B</code> excluded from the ranking to reduce self-locus bias.</p>
 </div>
 <div id="reproducibility-notes" class="section level2">
 <h2>Reproducibility Notes</h2>

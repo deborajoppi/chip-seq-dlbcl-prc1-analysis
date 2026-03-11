@@ -17,6 +17,10 @@ h3k27me3_sweep <- NULL
 if (file.exists("results/tables/h3k27me3_threshold_sweep.csv")) {
   h3k27me3_sweep <- read.csv("results/tables/h3k27me3_threshold_sweep.csv", stringsAsFactors = FALSE)
 }
+gsea_results <- NULL
+if (file.exists("results/tables/gsea_hallmark_promoter_overlap.csv")) {
+  gsea_results <- read.csv("results/tables/gsea_hallmark_promoter_overlap.csv", stringsAsFactors = FALSE)
+}
 if (file.exists("results/tables/go_enrichment.csv")) {
   go_terms <- read.csv("results/tables/go_enrichment.csv", stringsAsFactors = FALSE)
   go_source_label <- "Current rerun GO enrichment output"
@@ -136,6 +140,23 @@ if (file.exists(top_promoter_barplot_path)) {
 ```
 
 This promoter-restricted view excludes the self-genes `BCOR` and `KDM2B`, so it is easier to read as a candidate-target ranking rather than local occupancy around the bait loci.
+
+## Hallmark GSEA
+
+```{r gsea-table}
+if (!is.null(gsea_results)) {
+  knitr::kable(utils::head(gsea_results[, c("pathway", "NES", "padj", "size")], 15))
+}
+```
+
+```{r gsea-figure, echo=FALSE, out.width='90%', fig.align='center'}
+gsea_path <- file.path(figure_root, "gsea_hallmark_promoter_overlap.png")
+if (file.exists(gsea_path)) {
+  knitr::include_graphics(gsea_path)
+}
+```
+
+This GSEA is preranked on promoter-assigned shared non-H3K27me3 peak counts, with `BCOR` and `KDM2B` excluded from the ranking to reduce self-locus bias.
 
 ## Reproducibility Notes
 

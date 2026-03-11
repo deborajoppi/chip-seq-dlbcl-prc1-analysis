@@ -149,6 +149,7 @@ The rendered output is written to `results/report.html`. Detailed rerun notes ar
 - `make figures` generates PNG plots in `results/figures/` for the rerun counts, region distribution, and H3K27me3 threshold sensitivity.
 - `make figures` also generates a top-candidate-gene bar plot and a gene-by-set heatmap from the shared non-H3K27me3 annotation output.
 - It also generates a promoter-restricted top-target plot excluding the self-genes `BCOR` and `KDM2B`.
+- `make gsea` runs a preranked Hallmark GSEA on promoter-focused shared non-H3K27me3 target genes and writes a pathway plot plus result table.
 - `make sweep` runs a small sensitivity analysis over multiple `H3K27me3` signal thresholds and writes `results/tables/h3k27me3_threshold_sweep.csv`.
 
 ## Next Additions

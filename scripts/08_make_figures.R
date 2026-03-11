@@ -36,6 +36,16 @@ read_promoter_gene_counts <- function(path, exclude_genes = character()) {
   sort(table(genes), decreasing = TRUE)
 }
 
+read_set_gene_counts <- function(path, promoter_only = FALSE, exclude_genes = character()) {
+  dat <- read.delim(path, stringsAsFactors = FALSE, check.names = FALSE)
+  if (promoter_only) {
+    dat <- dat[grepl("promoter|tss", tolower(dat$Annotation)), , drop = FALSE]
+  }
+  genes <- trimws(dat$`Gene Name`)
+  genes <- genes[genes != "" & genes != "NA" & !(genes %in% exclude_genes)]
+  sort(table(genes), decreasing = TRUE)
+}
+
 make_venn <- function() {
   counts <- read.csv("results/tables/thesis_count_comparison.csv", stringsAsFactors = FALSE)
   bcor_unique <- counts$rerun_observed[counts$metric == "BCOR unique"]
@@ -141,12 +151,15 @@ make_gene_set_heatmap <- function() {
     Overlap_no_H3K27me3 = "results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv"
   )
 
-  top_counts <- read_gene_counts("results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv")
+  top_counts <- read_promoter_gene_counts(
+    "results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv",
+    exclude_genes = c("BCOR", "KDM2B")
+  )
   top_genes <- names(head(top_counts, 20))
 
   mat <- matrix(0, nrow = length(top_genes), ncol = length(set_paths), dimnames = list(top_genes, names(set_paths)))
   for (set_name in names(set_paths)) {
-    counts <- read_gene_counts(set_paths[[set_name]])
+    counts <- read_set_gene_counts(set_paths[[set_name]], promoter_only = TRUE, exclude_genes = c("BCOR", "KDM2B"))
     mat[, set_name] <- as.integer(counts[top_genes])
     mat[is.na(mat[, set_name]), set_name] <- 0L
   }
@@ -158,7 +171,7 @@ make_gene_set_heatmap <- function() {
   )
 
   z <- log1p(mat)
-  cols <- colorRampPalette(c("#FFF6E8", "#E8C547", "#C8523B", "#7C2118"))(100)
+  cols <- colorRampPalette(c("#FFF8E7", "#F4D35E", "#EE964B", "#D1495B", "#7F1D1D"))(100)
 
   png("results/figures/top_candidate_genes_heatmap.png", width = 1600, height = 1800, res = 180)
   par(mar = c(10, 12, 4, 2))
@@ -170,10 +183,15 @@ make_gene_set_heatmap <- function() {
     axes = FALSE,
     xlab = "",
     ylab = "",
-    main = "Top candidate genes across peak sets (log1p peak count)"
+    main = "Top promoter-bound candidate genes across peak sets"
   )
   axis(1, at = seq_len(ncol(z)), labels = colnames(z), las = 2, cex.axis = 0.9)
   axis(2, at = seq_len(nrow(z)), labels = rev(rownames(z)), las = 2, cex.axis = 0.75)
+  for (i in seq_len(nrow(mat))) {
+    for (j in seq_len(ncol(mat))) {
+      text(j, nrow(mat) - i + 1, labels = mat[i, j], cex = 0.65, col = ifelse(z[i, j] > median(z), "white", "#3A2A16"))
+    }
+  }
   box()
   dev.off()
 }
