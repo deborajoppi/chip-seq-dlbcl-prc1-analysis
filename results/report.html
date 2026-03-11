@@ -354,7 +354,6 @@ pre code {
 <li><a href="#h3k27me3-threshold-check">H3K27me3 Threshold Check</a></li>
 <li><a href="#biological-process-enrichment">Biological Process Enrichment</a></li>
 <li><a href="#candidate-genes">Candidate Genes</a></li>
-<li><a href="#figures">Figures</a></li>
 <li><a href="#reproducibility-notes">Reproducibility Notes</a></li>
 </ul>
 </div>
@@ -505,6 +504,7 @@ pre code {
 </table>
 <p>The thesis text reports that <code>6,943</code> shared peaks were located in promoter-TSS and intronic regions, consistent with promoter-proximal and intragenic binding by PRC1.1-associated factors.</p>
 <p>The current public rerun does <strong>not</strong> reproduce that specific promoter-plus-intron total. With the public overlap regions and current HOMER annotation workflow, promoter-TSS plus intron counts sum to <code>10,322</code> for the shared set.</p>
+<p>Inference from the current rerun: no simple combination of the overlap-region category counts yields <code>6,943</code>. The closest conspicuous number in the current outputs is the BCOR promoter-only count (<code>6,953</code>), so a reporting or label mix-up in the original thesis summary is plausible, but not proven.</p>
 </div>
 <div id="h3k27me3-threshold-check" class="section level2">
 <h2>H3K27me3 Threshold Check</h2>
@@ -679,15 +679,6 @@ pre code {
 </tbody>
 </table>
 <p>The current committed candidate gene table is a placeholder seeded with thesis-reported examples. Running the overlap and annotation workflow with the public peak BED files will replace it with a directly generated gene list.</p>
-</div>
-<div id="figures" class="section level2">
-<h2>Figures</h2>
-<p>Add thesis Figure 31 panels to <code>results/figures/</code> and extend this report to embed them:</p>
-<ul>
-<li><code>results/figures/figure31a_venn.*</code></li>
-<li><code>results/figures/figure31b_genomic_regions.*</code></li>
-<li><code>results/figures/figure31c_go_dotplot.*</code></li>
-</ul>
 </div>
 <div id="reproducibility-notes" class="section level2">
 <h2>Reproducibility Notes</h2>

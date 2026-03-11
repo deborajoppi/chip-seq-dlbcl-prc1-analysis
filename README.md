@@ -99,6 +99,8 @@ chip-seq-dlbcl-prc1-analysis/
 │   ├── 04_summarize_annotations.py
 │   ├── 05_run_go_enrichment.R
 │   ├── 06_render_report.R
+│   ├── 07_h3k27me3_threshold_sweep.py
+│   ├── 08_make_figures.R
 │   └── wig_to_bed.py
 ├── .gitignore
 ├── LICENSE
@@ -122,6 +124,7 @@ make prepare
 make overlap
 make annotate
 make summarize
+make figures
 make sweep
 make report
 ```
@@ -143,6 +146,7 @@ The rendered output is written to `results/report.html`. Detailed rerun notes ar
 - The workflow assumes that the public peak files used for rerun are aligned to `hg18`, matching the thesis analysis.
 - `H3K27me3` is distributed publicly as a WIG signal track, so the exclusion BED used in the rerun is derived from signal intervals rather than a deposited peak BED.
 - The overlap count is computed from distinct BCOR-KDM2B intersection regions. Strict non-overlap peak counts are tracked separately because they are not identical to the Venn-style counts reported in the thesis.
+- `make figures` generates PNG plots in `results/figures/` for the rerun counts, region distribution, and H3K27me3 threshold sensitivity.
 - `make sweep` runs a small sensitivity analysis over multiple `H3K27me3` signal thresholds and writes `results/tables/h3k27me3_threshold_sweep.csv`.
 
 ## Next Additions

@@ -12,6 +12,7 @@ peak_totals <- read.csv("results/tables/peak_totals.csv", stringsAsFactors = FAL
 region_summary <- read.csv("results/tables/genomic_region_summary.csv", stringsAsFactors = FALSE)
 candidate_genes <- read.csv("results/tables/candidate_target_genes.csv", stringsAsFactors = FALSE)
 thesis_counts <- read.csv("results/tables/thesis_count_comparison.csv", stringsAsFactors = FALSE)
+figure_root <- normalizePath("../results/figures", mustWork = FALSE)
 h3k27me3_sweep <- NULL
 if (file.exists("results/tables/h3k27me3_threshold_sweep.csv")) {
   h3k27me3_sweep <- read.csv("results/tables/h3k27me3_threshold_sweep.csv", stringsAsFactors = FALSE)
@@ -52,6 +53,13 @@ knitr::kable(thesis_counts, align = c("l", "r", "r"))
 
 The current public rerun reproduces the reported BCOR, KDM2B, overlap, and Venn-style unique counts when the overlap is defined as distinct BCOR-KDM2B genomic intersection regions.
 
+```{r venn-figure, echo=FALSE, out.width='80%', fig.align='center'}
+venn_path <- file.path(figure_root, "figure31a_venn_rerun.png")
+if (file.exists(venn_path)) {
+  knitr::include_graphics(venn_path)
+}
+```
+
 ## Genomic Distribution
 
 ```{r region-table}
@@ -62,6 +70,15 @@ The thesis text reports that `6,943` shared peaks were located in promoter-TSS a
 
 The current public rerun does **not** reproduce that specific promoter-plus-intron total. With the public overlap regions and current HOMER annotation workflow, promoter-TSS plus intron counts sum to `10,322` for the shared set.
 
+Inference from the current rerun: no simple combination of the overlap-region category counts yields `6,943`. The closest conspicuous number in the current outputs is the BCOR promoter-only count (`6,953`), so a reporting or label mix-up in the original thesis summary is plausible, but not proven.
+
+```{r region-figure, echo=FALSE, out.width='90%', fig.align='center'}
+region_path <- file.path(figure_root, "figure31b_genomic_regions_rerun.png")
+if (file.exists(region_path)) {
+  knitr::include_graphics(region_path)
+}
+```
+
 ## H3K27me3 Threshold Check
 
 ```{r h3k27me3-thresholds}
@@ -71,6 +88,13 @@ if (!is.null(h3k27me3_sweep)) {
 ```
 
 Across thresholds from `0.1` to `0.5`, the number of overlap regions retained after `H3K27me3` exclusion changes only modestly (`6,714` to `6,831`). This suggests the unresolved `6,943` thesis number is unlikely to be explained by small threshold changes alone and more likely reflects a different filtering or reporting choice.
+
+```{r threshold-figure, echo=FALSE, out.width='90%', fig.align='center'}
+threshold_path <- file.path(figure_root, "h3k27me3_threshold_sensitivity.png")
+if (file.exists(threshold_path)) {
+  knitr::include_graphics(threshold_path)
+}
+```
 
 ## Biological Process Enrichment
 
@@ -89,14 +113,6 @@ knitr::kable(head(candidate_genes, 20), align = c("l", "l"))
 ```
 
 The current committed candidate gene table is a placeholder seeded with thesis-reported examples. Running the overlap and annotation workflow with the public peak BED files will replace it with a directly generated gene list.
-
-## Figures
-
-Add thesis Figure 31 panels to `results/figures/` and extend this report to embed them:
-
-- `results/figures/figure31a_venn.*`
-- `results/figures/figure31b_genomic_regions.*`
-- `results/figures/figure31c_go_dotplot.*`
 
 ## Reproducibility Notes
 

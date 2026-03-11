@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: init fetch prepare overlap annotate summarize sweep go report all
+.PHONY: init fetch prepare overlap annotate summarize figures sweep go report all
 
 init:
 	bash scripts/00_prepare_dirs.sh
@@ -20,6 +20,9 @@ annotate:
 summarize:
 	python3 scripts/04_summarize_annotations.py
 
+figures:
+	Rscript scripts/08_make_figures.R
+
 sweep:
 	python3 scripts/07_h3k27me3_threshold_sweep.py
 
@@ -29,4 +32,4 @@ go:
 report:
 	Rscript scripts/06_render_report.R
 
-all: init fetch prepare overlap annotate summarize report
+all: init fetch prepare overlap annotate summarize figures report
