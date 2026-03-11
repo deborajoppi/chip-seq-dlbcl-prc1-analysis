@@ -28,6 +28,14 @@ read_gene_counts <- function(path) {
   sort(table(genes), decreasing = TRUE)
 }
 
+read_promoter_gene_counts <- function(path, exclude_genes = character()) {
+  dat <- read.delim(path, stringsAsFactors = FALSE, check.names = FALSE)
+  keep <- grepl("promoter|tss", tolower(dat$Annotation))
+  genes <- trimws(dat$`Gene Name`[keep])
+  genes <- genes[genes != "" & genes != "NA" & !(genes %in% exclude_genes)]
+  sort(table(genes), decreasing = TRUE)
+}
+
 make_venn <- function() {
   counts <- read.csv("results/tables/thesis_count_comparison.csv", stringsAsFactors = FALSE)
   bcor_unique <- counts$rerun_observed[counts$metric == "BCOR unique"]
@@ -170,8 +178,37 @@ make_gene_set_heatmap <- function() {
   dev.off()
 }
 
+make_promoter_target_barplot <- function() {
+  counts <- read_promoter_gene_counts(
+    "results/annotations/BCOR_KDM2B_overlap_no_H3K27me3.annotated.tsv",
+    exclude_genes = c("BCOR", "KDM2B")
+  )
+  top_counts <- head(counts, 20)
+  top_df <- data.frame(
+    gene = names(top_counts),
+    promoter_peak_count = as.integer(top_counts),
+    stringsAsFactors = FALSE
+  )
+  write.csv(top_df, "results/tables/top_promoter_candidate_gene_peak_counts.csv", row.names = FALSE)
+
+  png("results/figures/top_promoter_candidate_genes_barplot.png", width = 1800, height = 1400, res = 180)
+  par(mar = c(6, 10, 4, 2))
+  barplot(
+    rev(top_df$promoter_peak_count),
+    horiz = TRUE,
+    names.arg = rev(top_df$gene),
+    las = 1,
+    col = "#2F5AA8",
+    border = NA,
+    xlab = "Number of promoter-assigned shared non-H3K27me3 peaks",
+    main = "Top promoter-bound candidate genes excluding BCOR and KDM2B"
+  )
+  dev.off()
+}
+
 make_venn()
 make_region_plot()
 make_threshold_plot()
 make_top_target_barplot()
 make_gene_set_heatmap()
+make_promoter_target_barplot()

@@ -128,6 +128,15 @@ if (file.exists(top_heatmap_path)) {
 }
 ```
 
+```{r top-promoter-target-barplot, echo=FALSE, out.width='90%', fig.align='center'}
+top_promoter_barplot_path <- file.path(figure_root, "top_promoter_candidate_genes_barplot.png")
+if (file.exists(top_promoter_barplot_path)) {
+  knitr::include_graphics(top_promoter_barplot_path)
+}
+```
+
+This promoter-restricted view excludes the self-genes `BCOR` and `KDM2B`, so it is easier to read as a candidate-target ranking rather than local occupancy around the bait loci.
+
 ## Reproducibility Notes
 
 - Raw public files are intentionally not committed under `data/raw/`.
