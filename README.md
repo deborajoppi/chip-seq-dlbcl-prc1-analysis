@@ -151,9 +151,3 @@ The rendered output is written to `results/report.html`. Detailed rerun notes ar
 - It also generates a promoter-restricted top-target plot excluding the self-genes `BCOR` and `KDM2B`.
 - `make gsea` runs a preranked Hallmark GSEA on promoter-focused shared non-H3K27me3 target genes and writes a pathway plot plus result table.
 - `make sweep` runs a small sensitivity analysis over multiple `H3K27me3` signal thresholds and writes `results/tables/h3k27me3_threshold_sweep.csv`.
-
-## Next Additions
-
-- add the figure panel files corresponding to thesis Figure 31 into `results/figures/`
-- add the original overlap tables, genomic annotation tables, and GO output tables if available
-- replace the current summary placeholders with outputs generated directly from the rerun workflow
