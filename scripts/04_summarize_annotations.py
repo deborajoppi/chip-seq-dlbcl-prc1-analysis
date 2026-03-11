@@ -34,12 +34,18 @@ def classify_annotation(value: str) -> str:
 
 
 def write_peak_totals() -> None:
+    bcor_total = count_lines(ROOT / "results" / "tmp" / "normalized_peaks" / "BCOR_LY1_hg18.bed")
+    kdm2b_total = count_lines(ROOT / "results" / "tmp" / "normalized_peaks" / "KDM2B_LY1_hg18.bed")
+    overlap_total = count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap.bed")
+
     rows = [
-        ("BCOR", count_lines(ROOT / "results" / "tmp" / "normalized_peaks" / "BCOR_LY1_hg18.bed")),
-        ("KDM2B", count_lines(ROOT / "results" / "tmp" / "normalized_peaks" / "KDM2B_LY1_hg18.bed")),
-        ("BCOR and KDM2B overlap", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap.bed")),
-        ("BCOR unique vs KDM2B", count_lines(OVERLAP_DIR / "bcor_unique_vs_kdm2b.bed")),
-        ("KDM2B unique vs BCOR", count_lines(OVERLAP_DIR / "kdm2b_unique_vs_bcor.bed")),
+        ("BCOR", bcor_total),
+        ("KDM2B", kdm2b_total),
+        ("BCOR and KDM2B overlap", overlap_total),
+        ("BCOR unique (thesis-style: total minus overlap)", bcor_total - overlap_total),
+        ("KDM2B unique (thesis-style: total minus overlap)", kdm2b_total - overlap_total),
+        ("BCOR non-overlap strict", count_lines(OVERLAP_DIR / "bcor_nonoverlap_strict.bed")),
+        ("KDM2B non-overlap strict", count_lines(OVERLAP_DIR / "kdm2b_nonoverlap_strict.bed")),
         ("BCOR and KDM2B overlap with H3K27me3", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap_with_h3k27me3.bed")),
         ("BCOR and KDM2B overlap without H3K27me3", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap_without_h3k27me3.bed")),
     ]
@@ -48,6 +54,15 @@ def write_peak_totals() -> None:
         writer = csv.writer(handle)
         writer.writerow(["target_set", "total_peaks"])
         writer.writerows(rows)
+
+    with (TABLE_DIR / "thesis_count_comparison.csv").open("w", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["metric", "thesis_reported", "rerun_observed"])
+        writer.writerow(["BCOR", 17549, bcor_total])
+        writer.writerow(["KDM2B", 26471, kdm2b_total])
+        writer.writerow(["BCOR and KDM2B overlap", 14546, overlap_total])
+        writer.writerow(["BCOR unique", 3002, bcor_total - overlap_total])
+        writer.writerow(["KDM2B unique", 11925, kdm2b_total - overlap_total])
 
 
 def read_annotation_table(path: Path):
@@ -62,12 +77,26 @@ def read_annotation_table(path: Path):
 
         annotation_idx = None
         gene_idx = None
+        preferred_gene_columns = [
+            "gene name",
+            "gene alias",
+            "nearest promoterid",
+            "nearest refseq",
+            "nearest ensembl",
+            "entrez id",
+            "alias",
+        ]
+        header_index = {name.lower(): i for i, name in enumerate(header)}
+
         for i, name in enumerate(header):
             lower = name.lower()
             if lower == "annotation":
                 annotation_idx = i
-            if lower in {"gene name", "nearest promoterid", "nearest refseq", "ensembl", "alias"} and gene_idx is None:
-                gene_idx = i
+
+        for column_name in preferred_gene_columns:
+            if column_name in header_index:
+                gene_idx = header_index[column_name]
+                break
 
         rows = list(reader)
         return rows, annotation_idx, gene_idx

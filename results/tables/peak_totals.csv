@@ -1,5 +1,10 @@
 target_set,total_peaks
-BCOR,17549
+BCOR,17548
 KDM2B,26471
-"BCOR and KDM2B overlap",14546
-H3K27me3,39158099
+BCOR and KDM2B overlap,14546
+BCOR unique (thesis-style: total minus overlap),3002
+KDM2B unique (thesis-style: total minus overlap),11925
+BCOR non-overlap strict,3430
+KDM2B non-overlap strict,13804
+BCOR and KDM2B overlap with H3K27me3,7832
+BCOR and KDM2B overlap without H3K27me3,6714

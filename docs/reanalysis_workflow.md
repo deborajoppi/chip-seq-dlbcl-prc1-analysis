@@ -24,7 +24,19 @@ The accessions used in the thesis analysis are recorded in `data/metadata/public
 
 ## Input Convention
 
-Place peak BED files in `data/raw/peaks/` using these filenames:
+The repo can download the public GEO source files directly:
+
+```bash
+make fetch
+```
+
+This retrieves:
+
+- the `BCOR` overlap peak BED-like file
+- the `KDM2B` peak table
+- the `H3K27me3` read-density WIG
+
+If you prefer to provide files manually, place BED files in `data/raw/peaks/` using these filenames:
 
 - `BCOR_LY1_hg18.bed`
 - `KDM2B_LY1_hg18.bed`
@@ -65,10 +77,18 @@ make prepare
 
 This step:
 
-- checks that the three expected BED files exist
+- converts the downloaded public source files into standard BED inputs if needed
 - keeps the first six BED columns if extra columns are present
 - sorts each file by chromosome and genomic coordinate
 - writes standardized copies to `results/tmp/normalized_peaks/`
+
+For `H3K27me3`, GEO exposes a `variableStep` WIG signal track rather than a called-peak BED. The current workflow converts that signal to merged exclusion intervals using a configurable minimum signal threshold:
+
+```bash
+MIN_H3K27ME3_SIGNAL=0.1 make prepare
+```
+
+This is an approximation of the exclusion mask and may not exactly match the original thesis run if the original analysis used a different peak-calling or thresholding strategy.
 
 ### 3. Identify overlaps
 
@@ -79,10 +99,12 @@ make overlap
 This step creates:
 
 - `results/overlaps/bcor_kdm2b_overlap.bed`
-- `results/overlaps/bcor_unique_vs_kdm2b.bed`
-- `results/overlaps/kdm2b_unique_vs_bcor.bed`
+- `results/overlaps/bcor_nonoverlap_strict.bed`
+- `results/overlaps/kdm2b_nonoverlap_strict.bed`
 - `results/overlaps/bcor_kdm2b_overlap_with_h3k27me3.bed`
 - `results/overlaps/bcor_kdm2b_overlap_without_h3k27me3.bed`
+
+The primary overlap file is built from distinct BCOR-KDM2B genomic intersection regions, not just from an asymmetric `bedtools intersect -u` call. With the public files used here, that reproduces the thesis overlap count of `14,546`.
 
 ### 4. Annotate peak sets with HOMER
 
@@ -110,6 +132,7 @@ This creates:
 - `results/tables/peak_totals.csv`
 - `results/tables/genomic_region_summary.csv`
 - `results/tables/candidate_target_genes.csv`
+- `results/tables/thesis_count_comparison.csv`
 
 ### 6. Optional: GO enrichment
 

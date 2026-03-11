@@ -1,9 +1,12 @@
 SHELL := /bin/bash
 
-.PHONY: init prepare overlap annotate summarize go report all
+.PHONY: init fetch prepare overlap annotate summarize go report all
 
 init:
 	bash scripts/00_prepare_dirs.sh
+
+fetch:
+	bash scripts/00_fetch_public_data.sh
 
 prepare:
 	bash scripts/01_prepare_peak_inputs.sh
@@ -23,4 +26,4 @@ go:
 report:
 	Rscript scripts/06_render_report.R
 
-all: init prepare overlap annotate summarize report
+all: init fetch prepare overlap annotate summarize report

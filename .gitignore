@@ -19,3 +19,7 @@ data/raw/*
 # Local working outputs that should not be versioned by default.
 results/tmp/*
 !results/tmp/.gitkeep
+
+# Obsolete overlap outputs from an earlier asymmetric intersection definition.
+results/overlaps/bcor_unique_vs_kdm2b.bed
+results/overlaps/kdm2b_unique_vs_bcor.bed

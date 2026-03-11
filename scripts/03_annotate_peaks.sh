@@ -5,15 +5,16 @@ mkdir -p results/annotations
 
 GENOME="${1:-hg18}"
 
-declare -A peak_sets=(
-  [BCOR]="results/tmp/normalized_peaks/BCOR_LY1_hg18.bed"
-  [KDM2B]="results/tmp/normalized_peaks/KDM2B_LY1_hg18.bed"
-  [BCOR_KDM2B_overlap]="results/overlaps/bcor_kdm2b_overlap.bed"
-  [BCOR_KDM2B_overlap_no_H3K27me3]="results/overlaps/bcor_kdm2b_overlap_without_h3k27me3.bed"
+peak_sets=(
+  "BCOR:results/tmp/normalized_peaks/BCOR_LY1_hg18.bed"
+  "KDM2B:results/tmp/normalized_peaks/KDM2B_LY1_hg18.bed"
+  "BCOR_KDM2B_overlap:results/overlaps/bcor_kdm2b_overlap.bed"
+  "BCOR_KDM2B_overlap_no_H3K27me3:results/overlaps/bcor_kdm2b_overlap_without_h3k27me3.bed"
 )
 
-for label in "${!peak_sets[@]}"; do
-  input="${peak_sets[${label}]}"
+for entry in "${peak_sets[@]}"; do
+  label="${entry%%:*}"
+  input="${entry#*:}"
   output="results/annotations/${label}.annotated.tsv"
 
   if [[ ! -f "${input}" ]]; then

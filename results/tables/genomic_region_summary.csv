@@ -1,2 +1,7 @@
 peak_set,region_class,count
-BCOR and KDM2B overlap,promoter-TSS and intronic,6943
+BCOR and KDM2B overlap,promoter-TSS,6335
+BCOR and KDM2B overlap,intron,3987
+BCOR and KDM2B overlap,exon,2203
+BCOR and KDM2B overlap,intergenic,1745
+BCOR and KDM2B overlap,TTS,276
+BCOR and KDM2B overlap,other,0

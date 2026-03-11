@@ -14,6 +14,8 @@ The analysis logic is:
 4. use `H3K27me3` to flag PRC2-associated regions for exclusion
 5. summarize genomic annotations and enriched biological processes for the retained gene set
 
+For the BCOR-KDM2B overlap, the rerun workflow uses distinct genomic intersection regions between the two public peak sets. With the currently downloaded public files, that reproduces the thesis-reported overlap count of `14,546`.
+
 ## Public Data Used
 
 The public datasets used in the thesis analysis are:
@@ -77,17 +79,20 @@ chip-seq-dlbcl-prc1-analysis/
 │   │   ├── candidate_target_genes.csv
 │   │   ├── genomic_region_summary.csv
 │   │   ├── go_terms_summary.csv
-│   │   └── peak_totals.csv
+│   │   ├── peak_totals.csv
+│   │   └── thesis_count_comparison.csv
 │   └── tmp/
 │       └── .gitkeep
 ├── scripts/
 │   ├── 00_prepare_dirs.sh
+│   ├── 00_fetch_public_data.sh
 │   ├── 01_prepare_peak_inputs.sh
 │   ├── 02_intersect_peaks.sh
 │   ├── 03_annotate_peaks.sh
 │   ├── 04_summarize_annotations.py
 │   ├── 05_run_go_enrichment.R
-│   └── 06_render_report.R
+│   ├── 06_render_report.R
+│   └── wig_to_bed.py
 ├── .gitignore
 ├── LICENSE
 ├── Makefile
@@ -105,6 +110,7 @@ make init
 Run the BED-based reanalysis after placing the three peak files in `data/raw/peaks/`:
 
 ```bash
+make fetch
 make prepare
 make overlap
 make annotate
@@ -127,6 +133,8 @@ The rendered output is written to `results/report.html`. Detailed rerun notes ar
 - GEO accessions and source links are tracked in `data/metadata/public_sources.csv`.
 - The current committed summary tables capture the thesis-reported values and provide expected targets for rerunning the pipeline.
 - The workflow assumes that the public peak files used for rerun are aligned to `hg18`, matching the thesis analysis.
+- `H3K27me3` is distributed publicly as a WIG signal track, so the exclusion BED used in the rerun is derived from signal intervals rather than a deposited peak BED.
+- The overlap count is computed from distinct BCOR-KDM2B intersection regions. Strict non-overlap peak counts are tracked separately because they are not identical to the Venn-style counts reported in the thesis.
 
 ## Next Additions
 

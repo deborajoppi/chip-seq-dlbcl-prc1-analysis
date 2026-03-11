@@ -349,6 +349,7 @@ pre code {
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#peak-summary">Peak Summary</a></li>
+<li><a href="#thesis-count-comparison">Thesis Count Comparison</a></li>
 <li><a href="#genomic-distribution">Genomic Distribution</a></li>
 <li><a href="#biological-process-enrichment">Biological Process Enrichment</a></li>
 <li><a href="#candidate-genes">Candidate Genes</a></li>
@@ -374,7 +375,7 @@ pre code {
 <tbody>
 <tr class="odd">
 <td align="left">BCOR</td>
-<td align="right">17549</td>
+<td align="right">17548</td>
 </tr>
 <tr class="even">
 <td align="left">KDM2B</td>
@@ -385,8 +386,28 @@ pre code {
 <td align="right">14546</td>
 </tr>
 <tr class="even">
-<td align="left">H3K27me3</td>
-<td align="right">39158099</td>
+<td align="left">BCOR unique (thesis-style: total minus overlap)</td>
+<td align="right">3002</td>
+</tr>
+<tr class="odd">
+<td align="left">KDM2B unique (thesis-style: total minus overlap)</td>
+<td align="right">11925</td>
+</tr>
+<tr class="even">
+<td align="left">BCOR non-overlap strict</td>
+<td align="right">3430</td>
+</tr>
+<tr class="odd">
+<td align="left">KDM2B non-overlap strict</td>
+<td align="right">13804</td>
+</tr>
+<tr class="even">
+<td align="left">BCOR and KDM2B overlap with H3K27me3</td>
+<td align="right">7832</td>
+</tr>
+<tr class="odd">
+<td align="left">BCOR and KDM2B overlap without H3K27me3</td>
+<td align="right">6714</td>
 </tr>
 </tbody>
 </table>
@@ -397,6 +418,46 @@ pre code {
 <li><code>11,925</code> peaks were unique to <code>KDM2B</code>.</li>
 <li><code>3,002</code> peaks were unique to <code>BCOR</code>.</li>
 </ul>
+</div>
+<div id="thesis-count-comparison" class="section level2">
+<h2>Thesis Count Comparison</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">metric</th>
+<th align="right">thesis_reported</th>
+<th align="right">rerun_observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BCOR</td>
+<td align="right">17549</td>
+<td align="right">17548</td>
+</tr>
+<tr class="even">
+<td align="left">KDM2B</td>
+<td align="right">26471</td>
+<td align="right">26471</td>
+</tr>
+<tr class="odd">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="right">14546</td>
+<td align="right">14546</td>
+</tr>
+<tr class="even">
+<td align="left">BCOR unique</td>
+<td align="right">3002</td>
+<td align="right">3002</td>
+</tr>
+<tr class="odd">
+<td align="left">KDM2B unique</td>
+<td align="right">11925</td>
+<td align="right">11925</td>
+</tr>
+</tbody>
+</table>
+<p>The current public rerun reproduces the reported BCOR, KDM2B, overlap, and Venn-style unique counts when the overlap is defined as distinct BCOR-KDM2B genomic intersection regions.</p>
 </div>
 <div id="genomic-distribution" class="section level2">
 <h2>Genomic Distribution</h2>
@@ -411,8 +472,33 @@ pre code {
 <tbody>
 <tr class="odd">
 <td align="left">BCOR and KDM2B overlap</td>
-<td align="left">promoter-TSS and intronic</td>
-<td align="right">6943</td>
+<td align="left">promoter-TSS</td>
+<td align="right">6335</td>
+</tr>
+<tr class="even">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="left">intron</td>
+<td align="right">3987</td>
+</tr>
+<tr class="odd">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="left">exon</td>
+<td align="right">2203</td>
+</tr>
+<tr class="even">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="left">intergenic</td>
+<td align="right">1745</td>
+</tr>
+<tr class="odd">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="left">TTS</td>
+<td align="right">276</td>
+</tr>
+<tr class="even">
+<td align="left">BCOR and KDM2B overlap</td>
+<td align="left">other</td>
+<td align="right">0</td>
 </tr>
 </tbody>
 </table>
@@ -461,6 +547,7 @@ pre code {
 </tr>
 </tbody>
 </table>
+<p>Source for the table above: Thesis-reported GO summary placeholder.</p>
 <p>These terms suggest PRC1.1-associated chromatin binding in LY1 cells may regulate protein turnover, cell-cycle control, nucleocytoplasmic trafficking, developmental signaling, and apoptosis-related pathways.</p>
 </div>
 <div id="candidate-genes" class="section level2">
@@ -474,44 +561,84 @@ pre code {
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">PRICKLE1</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AAAS</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="even">
-<td align="left">CUL1</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AACS</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="odd">
-<td align="left">MARCHF6</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AAMP</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="even">
-<td align="left">FBXL3</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AARS1</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="odd">
-<td align="left">SMAD7</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AARS2</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="even">
-<td align="left">CLOCK</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AASDH</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="odd">
-<td align="left">POU4F1</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">AATBC</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="even">
-<td align="left">STK24</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">ABCA17P</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="odd">
-<td align="left">MYC</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">ABCA7</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 <tr class="even">
-<td align="left">JAK2</td>
-<td align="left">thesis_reported_example</td>
+<td align="left">ABCB10</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="odd">
+<td align="left">ABCB6</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="even">
+<td align="left">ABCC1</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="odd">
+<td align="left">ABCC4</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="even">
+<td align="left">ABCD1</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="odd">
+<td align="left">ABCD3</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="even">
+<td align="left">ABCF2-H2BK1</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="odd">
+<td align="left">ABCF3</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="even">
+<td align="left">ABCG1</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="odd">
+<td align="left">ABHD10</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
+</tr>
+<tr class="even">
+<td align="left">ABHD12</td>
+<td align="left">BCOR_KDM2B_overlap_without_H3K27me3</td>
 </tr>
 </tbody>
 </table>

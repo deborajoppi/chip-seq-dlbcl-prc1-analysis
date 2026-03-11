@@ -9,9 +9,16 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 peak_totals <- read.csv("results/tables/peak_totals.csv", stringsAsFactors = FALSE)
-go_terms <- read.csv("results/tables/go_terms_summary.csv", stringsAsFactors = FALSE)
 region_summary <- read.csv("results/tables/genomic_region_summary.csv", stringsAsFactors = FALSE)
 candidate_genes <- read.csv("results/tables/candidate_target_genes.csv", stringsAsFactors = FALSE)
+thesis_counts <- read.csv("results/tables/thesis_count_comparison.csv", stringsAsFactors = FALSE)
+if (file.exists("results/tables/go_enrichment.csv")) {
+  go_terms <- read.csv("results/tables/go_enrichment.csv", stringsAsFactors = FALSE)
+  go_source_label <- "Current rerun GO enrichment output"
+} else {
+  go_terms <- read.csv("results/tables/go_terms_summary.csv", stringsAsFactors = FALSE)
+  go_source_label <- "Thesis-reported GO summary placeholder"
+}
 ```
 
 ## Overview
@@ -33,6 +40,14 @@ Key observations from the thesis text:
 - `11,925` peaks were unique to `KDM2B`.
 - `3,002` peaks were unique to `BCOR`.
 
+## Thesis Count Comparison
+
+```{r count-comparison}
+knitr::kable(thesis_counts, align = c("l", "r", "r"))
+```
+
+The current public rerun reproduces the reported BCOR, KDM2B, overlap, and Venn-style unique counts when the overlap is defined as distinct BCOR-KDM2B genomic intersection regions.
+
 ## Genomic Distribution
 
 ```{r region-table}
@@ -44,8 +59,10 @@ The thesis text reports that `6,943` shared peaks were located in promoter-TSS a
 ## Biological Process Enrichment
 
 ```{r go-table}
-knitr::kable(go_terms, align = c("l", "l", "l"))
+knitr::kable(utils::head(go_terms, 20))
 ```
+
+Source for the table above: `r go_source_label`.
 
 These terms suggest PRC1.1-associated chromatin binding in LY1 cells may regulate protein turnover, cell-cycle control, nucleocytoplasmic trafficking, developmental signaling, and apoptosis-related pathways.
 

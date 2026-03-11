@@ -14,9 +14,13 @@ for file in "${BCOR}" "${KDM2B}" "${H3K27ME3}"; do
   fi
 done
 
-bedtools intersect -a "${BCOR}" -b "${KDM2B}" -u > results/overlaps/bcor_kdm2b_overlap.bed
-bedtools intersect -a "${BCOR}" -b "${KDM2B}" -v > results/overlaps/bcor_unique_vs_kdm2b.bed
-bedtools intersect -a "${KDM2B}" -b "${BCOR}" -v > results/overlaps/kdm2b_unique_vs_bcor.bed
+bedtools intersect -a "${BCOR}" -b "${KDM2B}" -wo \
+  | awk 'BEGIN{OFS="\t"} {s=($2>$8?$2:$8); e=($3<$9?$3:$9); if (s<e) print $1, s, e, "BCOR_KDM2B_common_region", ".", "."}' \
+  | sort -k1,1 -k2,2n -k3,3n \
+  | uniq > results/overlaps/bcor_kdm2b_overlap.bed
+
+bedtools intersect -a "${BCOR}" -b "${KDM2B}" -v > results/overlaps/bcor_nonoverlap_strict.bed
+bedtools intersect -a "${KDM2B}" -b "${BCOR}" -v > results/overlaps/kdm2b_nonoverlap_strict.bed
 bedtools intersect -a results/overlaps/bcor_kdm2b_overlap.bed -b "${H3K27ME3}" -u > results/overlaps/bcor_kdm2b_overlap_with_h3k27me3.bed
 bedtools intersect -a results/overlaps/bcor_kdm2b_overlap.bed -b "${H3K27ME3}" -v > results/overlaps/bcor_kdm2b_overlap_without_h3k27me3.bed
 
