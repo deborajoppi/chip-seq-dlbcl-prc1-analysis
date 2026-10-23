@@ -100,8 +100,8 @@ make_threshold_plot <- function() {
   par(mar = c(5, 5, 4, 2))
   plot(
     dat$min_signal, dat$overlap_without_h3k27me3,
-    type = "b", pch = 19, lwd = 3, col = "#2F5AA8",
-    xlab = "Minimum H3K27me3 signal threshold",
+    type = "b", pch = 19, lwd = 3, col = "#2F5AA8", log = "x",
+    xlab = "Minimum H3K27me3 signal threshold (log scale)",
     ylab = "Overlap regions retained",
     ylim = range(c(dat$overlap_without_h3k27me3, dat$overlap_with_h3k27me3)),
     main = "Sensitivity of PRC2 exclusion to H3K27me3 threshold"
