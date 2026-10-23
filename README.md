@@ -1,153 +1,95 @@
 # BCOR and KDM2B Target Gene Analysis in GCB-DLBCL
 
-This project documents a secondary analysis of public ChIP-seq data from the LY1 cell line to identify putative PRC1.1 target genes in germinal center B-cell-like diffuse large B-cell lymphoma (GCB-DLBCL).
+[![tests](https://github.com/deborajoppi/chip-seq-dlbcl-prc1-analysis/actions/workflows/tests.yml/badge.svg)](https://github.com/deborajoppi/chip-seq-dlbcl-prc1-analysis/actions/workflows/tests.yml)
 
-## Overview
+A reproducible secondary analysis of public ChIP-seq data from the OCI-LY1 cell line to identify putative PRC1.1 target genes in germinal center B-cell-like diffuse large B-cell lymphoma (GCB-DLBCL). It reruns, and where needed corrects, an analysis from my PhD thesis using only public data.
 
-Publicly available ChIP-seq peak sets for `KDM2B`, `BCOR`, and `H3K27me3` were used to define chromatin regions bound by PRC1.1-associated factors while excluding regions likely shared with PRC2.
+## Approach
 
-The analysis logic is:
+1. Download public LY1 ChIP-seq peaks for `BCOR` and `KDM2B` and the `H3K27me3` signal track (all `hg18`) from GEO.
+2. Find BCOR–KDM2B overlap at the peak level and as shared intersection regions.
+3. Flag shared regions that fall in an `H3K27me3` mask as likely PRC2-associated.
+4. Annotate regions to genes with `HOMER`.
+5. Test how much of the binding is explained by CpG islands, using a genome-shuffle permutation test.
+6. Run GO and Hallmark over-representation against two explicit backgrounds: all genes and CpG-island-promoter genes only.
 
-1. start from public LY1 ChIP-seq peak data aligned to `hg18`
-2. annotate peaks with `HOMER`
-3. identify overlapping `KDM2B` and `BCOR` peaks
-4. use `H3K27me3` to flag PRC2-associated regions for exclusion
-5. summarize genomic annotations and enriched biological processes for the retained gene set
+Step 5 matters because KDM2B binds unmethylated CpG islands through its CXXC domain. Any KDM2B-defined gene set is expected to be dominated by CpG-island promoters, which are enriched for housekeeping functions. Enrichment against a CpG-island background separates that compositional effect from PRC1.1-specific targeting.
 
-For the BCOR-KDM2B overlap, the rerun workflow uses distinct genomic intersection regions between the two public peak sets. With the currently downloaded public files, that reproduces the thesis-reported overlap count of `14,546`.
+## Public Data
 
-## Public Data Used
+| Assay | Target | GEO | Format used |
+|---|---|---|---|
+| ChIP-seq | BCOR | [GSE29282](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE29282) | Peak BED |
+| ChIP-seq | KDM2B | [GSE81623](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81623) | ChIPseeqer peak table |
+| ChIP-seq | H3K27me3 | [GSM763414](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM763414) | Read-density WIG (no peaks deposited) |
 
-The public datasets used in the thesis analysis are:
+hg18 CpG islands, RefSeq genes and chromosome sizes come from the UCSC Genome Browser. Download URLs are in `scripts/00_fetch_public_data.sh` and accessions in `data/metadata/public_sources.csv`.
 
-| Assay | Target | GEO accession | URL | Notes |
-|---|---|---|---|---|
-| ChIP-seq | BCOR | `GSE29282` | https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE29282 | Source used for BCOR LY1 peaks |
-| ChIP-seq | KDM2B | `GSE81623` | https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE81623 | Source used for KDM2B LY1 peaks |
-| ChIP-seq | H3K27me3 | `GSM763414` | https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM763414 | Source used to exclude PRC2-associated regions |
+## Results
 
-Because GEO releases can package peak files differently across accessions, this repo standardizes the rerun workflow around three local BED inputs:
-
-- `data/raw/peaks/BCOR_LY1_hg18.bed`
-- `data/raw/peaks/KDM2B_LY1_hg18.bed`
-- `data/raw/peaks/H3K27me3_LY1_hg18.bed`
-
-The step-by-step workflow for preparing those files and rerunning the analysis is documented in `docs/reanalysis_workflow.md`.
-
-## Key Results
-
-| Target set | Total peaks |
+| Set | Count |
 |---|---:|
-| BCOR | 17,549 |
-| KDM2B | 26,471 |
-| BCOR and KDM2B overlap | 14,546 |
-| H3K27me3 | 39,158,099 |
+| BCOR peaks | 17,548 |
+| KDM2B peaks | 26,471 |
+| BCOR peaks overlapping a KDM2B peak | 14,118 (80%) |
+| KDM2B peaks overlapping a BCOR peak | 12,667 (48%) |
+| Shared BCOR–KDM2B regions | 14,546 |
+| Shared regions outside the H3K27me3 mask (threshold 0.1) | 6,714 |
 
-Additional reported findings:
+Most BCOR sites in LY1 are co-bound by KDM2B, consistent with BCOR acting within PRC1.1, while about half of KDM2B sites lack BCOR.
 
-- `14,546` peaks overlapped between `BCOR` and `KDM2B`.
-- `6,943` overlapping peaks were located in promoter-TSS and intronic regions.
-- `11,925` peaks were unique to `KDM2B`.
-- `3,002` peaks were unique to `BCOR`.
-- Enriched biological processes included proteasome-mediated ubiquitin-dependent protein catabolic process, mitotic cell cycle phase transition, Wnt signaling pathway, nucleocytoplasmic transport, and intrinsic apoptotic signaling pathway.
+**Reproduction of the thesis numbers** (`results/tables/thesis_count_comparison.csv`):
 
-Representative genes highlighted in the thesis text include `PRICKLE1`, `CUL1`, `MARCHF6`, `FBXL3`, `SMAD7`, `CLOCK`, `POU4F1`, `STK24`, `MYC`, and `JAK2`.
+- The shared-region count (`14,546`) and the KDM2B total reproduce exactly. BCOR differs by one peak (`17,548` vs `17,549`).
+- The thesis "unique" counts (`3,002` and `11,925`) were computed as total peaks minus shared regions, which mixes units. The strict per-peak counts are `3,430` BCOR-only and `13,804` KDM2B-only peaks.
+- The thesis figure of `6,943` shared peaks in promoter or intronic regions is **not** reproduced; the rerun gives `10,322` (6,335 promoter-TSS + 3,987 intron). The closest number in the rerun is the BCOR promoter-only count (`6,953`), so a labelling mix-up in the original summary is plausible but unconfirmed.
 
-Current public rerun status:
+**Sensitivity of the H3K27me3 filter** (`results/tables/h3k27me3_threshold_sweep.csv`): between signal thresholds 0.1 and 0.5 the number of retained shared regions barely changes (6,714 → 6,831), but at 1.0 it nearly doubles (11,475). The mask is a thresholded read-density track rather than called broad domains, so the filtered set depends on this choice. `make sweep` also reports the fraction of the genome masked at each threshold.
 
-- the overlap count `14,546` is reproduced exactly from the public files
-- the Venn-style unique counts are also reproduced (`3,002` BCOR-unique and `11,925` KDM2B-unique)
-- the promoter-plus-intron figure from the thesis text is not yet reproduced by the current public rerun annotation workflow
-- `H3K27me3` threshold checks from `0.1` to `0.5` only modestly change the retained overlap-without-H3K27me3 count, so the unresolved `6,943` value likely reflects a different filtering or reporting choice
+**CpG-island background and enrichment** (`make cgi enrich`): outputs are written to `cgi_overlap_permutation.csv`, `cgi_promoter_summary.csv` and `enrichment_summary.csv` in `results/tables/`.
 
-## Repository Layout
-
-```text
-chip-seq-dlbcl-prc1-analysis/
-├── docs/
-│   └── reanalysis_workflow.md
-├── data/
-│   ├── metadata/
-│   │   └── public_sources.csv
-│   └── raw/
-│       ├── .gitkeep
-│       └── peaks/
-│           └── .gitkeep
-├── reports/
-│   └── report.Rmd
-├── results/
-│   ├── annotations/
-│   │   └── .gitkeep
-│   ├── figures/
-│   │   └── .gitkeep
-│   ├── overlaps/
-│   │   └── .gitkeep
-│   ├── tables/
-│   │   ├── candidate_target_genes.csv
-│   │   ├── genomic_region_summary.csv
-│   │   ├── go_terms_summary.csv
-│   │   ├── peak_totals.csv
-│   │   └── thesis_count_comparison.csv
-│   └── tmp/
-│       └── .gitkeep
-├── scripts/
-│   ├── 00_prepare_dirs.sh
-│   ├── 00_fetch_public_data.sh
-│   ├── 01_prepare_peak_inputs.sh
-│   ├── 02_intersect_peaks.sh
-│   ├── 03_annotate_peaks.sh
-│   ├── 04_summarize_annotations.py
-│   ├── 05_run_go_enrichment.R
-│   ├── 06_render_report.R
-│   ├── 07_h3k27me3_threshold_sweep.py
-│   ├── 08_make_figures.R
-│   └── wig_to_bed.py
-├── .gitignore
-├── LICENSE
-├── Makefile
-└── README.md
-```
+The GO terms reported in the thesis (proteasome-mediated catabolism, cell-cycle transition, Wnt signaling, nucleocytoplasmic transport, intrinsic apoptosis) were computed without an explicit background. They are kept for reference in `results/tables/thesis_reported_go_terms.csv` and are not regenerated by this pipeline.
 
 ## Run
 
-Prepare directories:
-
 ```bash
-make init
+conda env create -f environment.yml && conda activate prc1-chipseq
+perl "$CONDA_PREFIX"/share/homer*/configureHomer.pl -install hg18   # one time
+
+make all    # fetch → prepare → overlap → annotate → summarize → sweep → cgi → enrich → report
+make test   # synthetic-fixture tests, no downloads, ~5 s
 ```
 
-Run the BED-based reanalysis after placing the three peak files in `data/raw/peaks/`:
+The Makefile tracks file dependencies (GNU Make ≥ 4.3, included in the conda environment), so rerunning only rebuilds what changed. Individual steps: `make fetch`, `prepare`, `overlap`, `annotate`, `summarize`, `sweep`, `cgi`, `enrich`, `figures`, `report`. The rendered report is written to `results/report.html`.
 
-```bash
-make fetch
-make prepare
-make overlap
-make annotate
-make summarize
-make figures
-make sweep
-make report
+## Repository Layout
+
+```
+scripts/
+  00_fetch_public_data.sh       GEO peaks + UCSC hg18 annotation
+  01_prepare_peak_inputs.sh     normalize to sorted BED; WIG → H3K27me3 mask
+  02_intersect_peaks.sh         peak-level overlaps and shared regions
+  03_annotate_peaks.sh          HOMER annotation
+  04_summarize_annotations.py   count tables
+  05_run_enrichment.R           GO BP + Hallmark ORA, two backgrounds
+  06_render_report.R
+  07_h3k27me3_threshold_sweep.py
+  08_make_figures.R
+  10_cgi_background.py          CpG-island permutation test + promoter universe
+  wig_to_bed.py
+tests/                          fixtures + run_tests.sh (run in GitHub Actions)
+results/tables, results/figures, results/overlaps, results/annotations
+reports/report.Rmd
+docs/reanalysis_workflow.md
 ```
 
-Optional GO enrichment:
+## Limitations
 
-```bash
-make go
-```
+- All data are on `hg18` and come from different labs and years (BCOR 2011, KDM2B 2016) with different peak callers. A cleaner design would reprocess all three datasets from raw reads with one pipeline on `hg38`.
+- The H3K27me3 mask is derived by thresholding a read-density track; see the sensitivity analysis above.
+- Peak-to-gene assignment uses nearest-TSS annotation (HOMER) or a fixed ±1 kb promoter window, neither of which captures distal regulation.
+- Binding alone does not show regulation. Candidate targets would need to be checked against expression changes after BCOR or KDM2B perturbation.
 
-The rendered output is written to `results/report.html`. Detailed rerun notes are in `docs/reanalysis_workflow.md`.
+## License
 
-## Data Notes
-
-- This repository is intended for `public` data and derived summaries only.
-- Raw downloaded files are excluded from git by default under `data/raw/`.
-- GEO accessions and source links are tracked in `data/metadata/public_sources.csv`.
-- The current committed summary tables capture the thesis-reported values and provide expected targets for rerunning the pipeline.
-- The workflow assumes that the public peak files used for rerun are aligned to `hg18`, matching the thesis analysis.
-- `H3K27me3` is distributed publicly as a WIG signal track, so the exclusion BED used in the rerun is derived from signal intervals rather than a deposited peak BED.
-- The overlap count is computed from distinct BCOR-KDM2B intersection regions. Strict non-overlap peak counts are tracked separately because they are not identical to the Venn-style counts reported in the thesis.
-- `make figures` generates PNG plots in `results/figures/` for the rerun counts, region distribution, and H3K27me3 threshold sensitivity.
-- `make figures` also generates a top-candidate-gene bar plot and a gene-by-set heatmap from the shared non-H3K27me3 annotation output.
-- It also generates a promoter-restricted top-target plot excluding the self-genes `BCOR` and `KDM2B`.
-- `make gsea` runs a preranked Hallmark GSEA on promoter-focused shared non-H3K27me3 target genes and writes a pathway plot plus result table.
-- `make sweep` runs a small sensitivity analysis over multiple `H3K27me3` signal thresholds and writes `results/tables/h3k27me3_threshold_sweep.csv`.
+MIT
