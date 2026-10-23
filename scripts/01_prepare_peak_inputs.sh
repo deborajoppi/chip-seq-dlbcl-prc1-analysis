@@ -14,7 +14,7 @@ if [[ ! -f "${BCOR_BED}" ]]; then
     exit 1
   fi
   gunzip -c data/raw/peaks/BCOR_LY1_hg18.source.bed.gz \
-    | awk 'BEGIN{OFS="\t"} $1 !~ /^track/ && NF >= 3 {print $1, $2, $3, "BCOR_peak_" NR, ".", "."}' \
+    | awk 'BEGIN{OFS="\t"} $1 !~ /^track/ && NF >= 3 {n++; print $1, $2, $3, "BCOR_peak_" n, ".", "."}' \
     > "${BCOR_BED}"
 fi
 
