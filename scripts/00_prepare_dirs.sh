@@ -4,6 +4,7 @@ set -euo pipefail
 mkdir -p \
   data/raw \
   data/raw/peaks \
+  data/raw/annotation \
   data/metadata \
   docs \
   results/annotations \
