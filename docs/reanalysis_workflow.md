@@ -12,7 +12,7 @@ Identify putative `PRC1.1` target genes in `LY1` cells by:
 4. retaining the shared non-`H3K27me3` peaks as PRC1.1-focused candidates
 5. annotating peaks to nearby genes with `HOMER`
 6. summarizing genomic distribution and candidate target genes
-7. optionally running GO enrichment on the candidate gene list
+7. testing CpG-island enrichment and running GO/Hallmark over-representation against explicit backgrounds
 
 ## Public Sources
 
@@ -59,7 +59,9 @@ Only the first three columns are required by the overlap steps.
 - `annotatePeaks.pl` from HOMER
 - `python3`
 - `Rscript`
-- optional for GO: `clusterProfiler` and `org.Hs.eg.db`
+- R packages `clusterProfiler`, `org.Hs.eg.db`, `AnnotationDbi`, `msigdbr`, `rmarkdown`
+
+All of these are pinned in `environment.yml`.
 
 ## Step-by-Step Commands
 
@@ -98,13 +100,15 @@ make overlap
 
 This step creates:
 
-- `results/overlaps/bcor_kdm2b_overlap.bed`
+- `results/overlaps/bcor_peaks_overlapping_kdm2b.bed` (peak level)
+- `results/overlaps/kdm2b_peaks_overlapping_bcor.bed` (peak level)
+- `results/overlaps/bcor_kdm2b_overlap.bed` (shared intersection regions)
 - `results/overlaps/bcor_nonoverlap_strict.bed`
 - `results/overlaps/kdm2b_nonoverlap_strict.bed`
 - `results/overlaps/bcor_kdm2b_overlap_with_h3k27me3.bed`
 - `results/overlaps/bcor_kdm2b_overlap_without_h3k27me3.bed`
 
-The primary overlap file is built from distinct BCOR-KDM2B genomic intersection regions, not just from an asymmetric `bedtools intersect -u` call. With the public files used here, that reproduces the thesis overlap count of `14,546`.
+Two overlap definitions are produced. Peak-level files count original peaks that touch at least one peak of the other factor (14,118 BCOR, 12,667 KDM2B). The shared-region file contains distinct BCOR∩KDM2B intersection fragments (14,546, matching the thesis) and is what gets annotated downstream. The two are in different units and should not be subtracted from each other.
 
 ### 4. Annotate peak sets with HOMER
 
@@ -134,13 +138,16 @@ This creates:
 - `results/tables/candidate_target_genes.csv`
 - `results/tables/thesis_count_comparison.csv`
 
-### 6. Optional: GO enrichment
+### 6. CpG-island background and enrichment
 
 ```bash
-make go
+make cgi
+make enrich
 ```
 
-If the required R packages are installed, this reads `results/tables/candidate_target_genes.csv` and writes GO enrichment results to `results/tables/go_enrichment.csv`.
+`make cgi` measures the fraction of each peak set on CpG islands against 100 genome shuffles (same chromosome, same interval lengths) and builds a gene-level promoter table (`results/tables/promoter_universe.tsv`) marking CGI promoters and bound promoters.
+
+`make enrich` runs GO BP and Hallmark over-representation for promoters bound by shared regions outside the H3K27me3 mask, against all genes and against CGI-promoter genes only. hg18 gene symbols are mapped to current Entrez IDs through RefSeq accessions.
 
 ### 7. Sweep H3K27me3 thresholds
 
@@ -155,7 +162,7 @@ Current interpretation from the public rerun:
 - the shared BCOR-KDM2B overlap count is reproduced exactly at `14,546`
 - the Venn-style unique counts are also reproduced (`3,002` BCOR-unique and `11,925` KDM2B-unique)
 - the promoter-plus-intron figure from the thesis text is **not** currently reproduced by the public rerun annotation workflow
-- threshold sweeps from `0.1` to `0.5` change the retained overlap-without-H3K27me3 count only modestly, so the `6,943` thesis value likely reflects a different filtering or reporting step
+- threshold sweeps from `0.1` to `0.5` change the retained count only modestly, but at `1.0` it nearly doubles (6,714 → 11,475), so the H3K27me3 filter is threshold-dependent; the `6,943` thesis value is not explained by any threshold tested
 
 ### 8. Render the report
 
@@ -168,7 +175,7 @@ This writes `results/report.html`.
 ## Interpretation Notes
 
 - The thesis summary reports `14,546` overlapping peaks between `BCOR` and `KDM2B`.
-- It also reports `11,925` `KDM2B`-unique peaks and `3,002` `BCOR`-unique peaks.
+- It also reports `11,925` `KDM2B`-unique and `3,002` `BCOR`-unique peaks, computed as total peaks minus shared regions. Strict per-peak counts are `13,804` and `3,430`.
 - `H3K27me3` is used here as an exclusion filter for candidate regions likely co-occupied by `PRC2`.
 
 If your rerun counts differ, record the reason in the README:
