@@ -39,20 +39,25 @@ def write_peak_totals() -> None:
     overlap_total = count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap.bed")
 
     rows = [
-        ("BCOR", bcor_total),
-        ("KDM2B", kdm2b_total),
-        ("BCOR and KDM2B overlap", overlap_total),
-        ("BCOR unique (thesis-style: total minus overlap)", bcor_total - overlap_total),
-        ("KDM2B unique (thesis-style: total minus overlap)", kdm2b_total - overlap_total),
-        ("BCOR non-overlap strict", count_lines(OVERLAP_DIR / "bcor_nonoverlap_strict.bed")),
-        ("KDM2B non-overlap strict", count_lines(OVERLAP_DIR / "kdm2b_nonoverlap_strict.bed")),
-        ("BCOR and KDM2B overlap with H3K27me3", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap_with_h3k27me3.bed")),
-        ("BCOR and KDM2B overlap without H3K27me3", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap_without_h3k27me3.bed")),
+        # Peak-level counts (primary; every row is in units of original peaks)
+        ("BCOR peaks", bcor_total),
+        ("KDM2B peaks", kdm2b_total),
+        ("BCOR peaks overlapping a KDM2B peak", count_lines(OVERLAP_DIR / "bcor_peaks_overlapping_kdm2b.bed")),
+        ("KDM2B peaks overlapping a BCOR peak", count_lines(OVERLAP_DIR / "kdm2b_peaks_overlapping_bcor.bed")),
+        ("BCOR peaks with no KDM2B overlap", count_lines(OVERLAP_DIR / "bcor_nonoverlap_strict.bed")),
+        ("KDM2B peaks with no BCOR overlap", count_lines(OVERLAP_DIR / "kdm2b_nonoverlap_strict.bed")),
+        # Shared-region counts (unit = BCOR∩KDM2B intersection fragments)
+        ("Shared BCOR-KDM2B regions", overlap_total),
+        ("Shared regions overlapping H3K27me3 mask", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap_with_h3k27me3.bed")),
+        ("Shared regions outside H3K27me3 mask", count_lines(OVERLAP_DIR / "bcor_kdm2b_overlap_without_h3k27me3.bed")),
+        # Thesis-style reconciliation (mixes units: peaks minus fragments)
+        ("BCOR unique, thesis-style (peaks minus shared regions)", bcor_total - overlap_total),
+        ("KDM2B unique, thesis-style (peaks minus shared regions)", kdm2b_total - overlap_total),
     ]
 
     with (TABLE_DIR / "peak_totals.csv").open("w", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(["target_set", "total_peaks"])
+        writer.writerow(["set", "count"])
         writer.writerows(rows)
 
     with (TABLE_DIR / "thesis_count_comparison.csv").open("w", newline="") as handle:
